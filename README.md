@@ -10,9 +10,15 @@
 
 ## 📸 预览
 
+<<<<<<< HEAD
+| Web 控制面板 | 详细信息输出 |
+|:---:|:---:|
+| ![Web UI 截图占位](/imag/侦测1.jpg) | ![详细信息占位](/img/侦测2.jpg) |
+=======
 | Web 控制面板 | 串口调试输出 |
 |:---:|:---:|
 | ![Web UI 截图占位](docs/images/web-ui-preview.png) | ![串口输出截图占位](docs/images/serial-output.png) |
+>>>>>>> ebe26e6d3eab9427d609757595e05ce21c929acb
 
 > **📌 需要做的：** 编译烧录后，将实际截图保存到 `docs/images/` 目录下替换以上占位图。
 
@@ -41,6 +47,15 @@
 
 > ✅ 无需额外射频硬件 —— 利用 ESP32 自带的 WiFi 控制器即可监听无人机广播。
 
+<<<<<<< HEAD
+
+### 🔌 伪造测试（未开源，可测试）
+
+| Web 控制面板 | 详细信息输出 |
+|:---:|:---:|
+<video src="/videos/伪造.mp4" controls width="100%"></video>
+在此感谢网友“迷麟”大佬使用专业无人机侦测设备给出伪造测试结果和侦测的建议。
+=======
 ### 🔌 引脚连接（Serial1）
 
 | 功能 | GPIO |
@@ -48,6 +63,7 @@
 | TX  | 6    |
 | RX  | 7    |
 
+>>>>>>> ebe26e6d3eab9427d609757595e05ce21c929acb
 ---
 
 ## 🚀 快速开始
@@ -187,17 +203,26 @@ const int SERIAL1_TX_PIN = 6;
 ## 🗂️ 项目结构
 
 ```
+<<<<<<< HEAD
+DroneScanner\
+=======
 E:\DroneScanner\DroneScanner\
 ├── README.md               # 本文件（GitHub 项目说明）
 ├── LICENSE                 # MIT 许可证
+>>>>>>> ebe26e6d3eab9427d609757595e05ce21c929acb
 ├── scanner/
 │   ├── DroneScanner.ino    # 主程序（Web UI + API + 核心逻辑）
 │   ├── opendroneid.h       # Open Drone ID 协议解码头文件
 │   ├── opendroneid.c       # Open Drone ID 协议解码实现
 │   ├── odid_wifi.h         # ODID over WiFi 封装（含 extern "C" 保护）
+<<<<<<< HEAD
+    └── wifi.c              # WiFi 混杂模式配置
+
+=======
 │   └── wifi.c              # WiFi 混杂模式配置
 └── docs/
     └── images/             # 截图存放目录
+>>>>>>> ebe26e6d3eab9427d609757595e05ce21c929acb
 ```
 
 ---
@@ -250,11 +275,17 @@ Web server ready
 <summary><b>探测不到无人机？</b></summary>
 
 - 确保无人机已起飞（部分机型在地面不广播 Remote ID）
+<<<<<<< HEAD
+- 靠近无人机试试，不带天线测试100m左右可侦测到
+=======
 - 靠近无人机至 100m 范围内
+>>>>>>> ebe26e6d3eab9427d609757595e05ce21c929acb
 - 检查 ESP32 天线是否接好
 - 用串口监视器查看实时日志，确认 ESP32 是否正常接收数据包
 </details>
 
+<<<<<<< HEAD
+=======
 <details>
 <summary><b>Web 页面一直显示 0 无人机？</b></summary>
 
@@ -273,11 +304,16 @@ Web server ready
 这是 C++（`.ino`）调用 C（`.c`）函数时的链接错误。`odid_wifi.h` 已添加 `extern "C"` 保护，直接从本仓库克隆即可。
 </details>
 
+>>>>>>> ebe26e6d3eab9427d609757595e05ce21c929acb
 ---
 
 ## 📄 License
 
+<<<<<<< HEAD
+本项目基于开源 ODID 库和 ESP32 Arduino 框架开发，**仅用于教育和研究目的**。
+=======
 本项目基于 [MIT License](LICENSE) 开源，基于开源 ODID 库和 ESP32 Arduino 框架开发，**仅用于教育和研究目的**。
+>>>>>>> ebe26e6d3eab9427d609757595e05ce21c929acb
 
 - [Open Drone ID](https://github.com/opendroneid) — 开源 ODID 协议实现
 - [ASTM F3411-22a](https://www.astm.org/f3411-22a.html) — Remote ID 标准
