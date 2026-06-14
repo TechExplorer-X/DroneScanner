@@ -12,7 +12,7 @@
 
 | Web 控制面板 | 详细信息输出 |
 |:---:|:---:|
-| ![Web UI 截图](/imag/侦测1.jpg) | ![详细信息](/img/侦测2.jpg) |
+| ![Web UI 截图](/img/侦测1.jpg) | ![详细信息](/img/侦测2.jpg) |
 
 ---
 
@@ -50,7 +50,7 @@
 
 | Web 控制面板 | 详细信息输出 |
 |:---:|:---:|
-<video src="/videos/伪造.mp4" controls width="100%"></video>
+<video src="videos/伪造.mp4" controls width="100%"></video>
 
 在此感谢网友 **迷麟** 使用专业无人机侦测设备给出伪造测试结果和侦测的建议。
 
@@ -70,7 +70,7 @@
 ### 2️⃣ 克隆 / 下载本项目
 
 ```bash
-git clone https://github.com/your-username/DroneScanner.git
+git clone https://github.com/TechExplorer-X/DroneScanner.git
 cd DroneScanner
 ```
 
@@ -267,23 +267,11 @@ Web server ready
 打开 Arduino IDE 串口监视器（115200 baud），查看是否有 `[state]` 日志输出。如果完全无输出，检查 WiFi 混杂模式是否初始化成功。
 </details>
 
-<details>
-<summary><b>编译报错 "expected primary-expression before '.' token"？</b></summary>
-
-这是代码中使用了中文标识符（如 `序列号`）导致的旧问题。本仓库代码已全部恢复为英文标识符，可直接编译。
-</details>
-
-<details>
-<summary><b>编译报错 "undefined reference to rf_recv_pkt_a / rf_data_decode"？</b></summary>
-
-这是 C++（`.ino`）调用 C（`.c`）函数时的链接错误。`odid_wifi.h` 已添加 `extern "C"` 保护，直接从本仓库克隆即可。
-</details>
-
 ---
 
 ## 📄 License
 
-本项目基于 [MIT License](LICENSE) 开源，基于开源 ODID 库和 ESP32 Arduino 框架开发，**仅用于教育和研究目的**。
+本项目基于基于开源 ODID 库和 ESP32 Arduino 框架开发，**仅用于教育和研究目的**。
 
 - [Open Drone ID](https://github.com/opendroneid) — 开源 ODID 协议实现
 - [ASTM F3411-22a](https://www.astm.org/f3411-22a.html) — Remote ID 标准
