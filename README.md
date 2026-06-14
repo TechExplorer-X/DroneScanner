@@ -183,7 +183,6 @@ const int SERIAL1_TX_PIN = 6;
 
 ```
 DroneScanner\
-├── README.md               # 本文件（GitHub 项目说明）
 ├── LICENSE                 # MIT 许可证
 ├── scanner/
 │   ├── DroneScanner.ino    # 主程序（Web UI + API + 核心逻辑）
@@ -191,8 +190,6 @@ DroneScanner\
 │   ├── opendroneid.c       # Open Drone ID 协议解码实现
 │   ├── odid_wifi.h         # ODID over WiFi 封装（含 extern "C" 保护）
 │   └── wifi.c              # WiFi 混杂模式配置
-└── docs/
-    └── images/             # 截图存放目录
 ```
 
 ---
