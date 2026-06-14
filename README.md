@@ -43,12 +43,7 @@
 
 在此感谢网友 **迷麟** 使用专业无人机侦测设备给出伪造测试结果和侦测的建议。
 
-<!-- GitHub 不渲染 iframe，此处仅保留源码供本地渲染；页面打开自动播放 -->
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=116746656678508&bvid=BV1ctJF6XEzL&cid=39105203321&p=1&autoplay=1&high_quality=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="width:100%;aspect-ratio:16/9"></iframe>
-
-[▶️ 在 B 站打开观看](https://www.bilibili.com/video/BV1ctJF6XEzL)
-
----
+空
 
 ## 🚀 快速开始
 
