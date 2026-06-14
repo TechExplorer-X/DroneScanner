@@ -1,6 +1,6 @@
 # 🛸 DroneScanner — ESP32 无人机 Remote ID 探测扫描仪
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![ESP32](https://img.shields.io/badge/Hardware-ESP32-blue)](https://www.espressif.com/)
 [![Open Drone ID](https://img.shields.io/badge/Protocol-ASTM_F3411--22a-green)](https://www.astm.org/f3411-22a.html)
 
@@ -39,18 +39,13 @@
 
 > ✅ 无需额外射频硬件 —— 利用 ESP32 自带的 WiFi 控制器即可监听无人机广播。
 
-### 🔌 引脚连接（Serial1）
-
-| 功能 | GPIO |
-|:---:|:----:|
-| TX  | 6    |
-| RX  | 7    |
-
-### 🎥 伪造测试（未开源，仅测试）
-
-<video src="videos/伪造.mp4" controls width="100%"></video>
+### 🎥 伪造测试演示
 
 在此感谢网友 **迷麟** 使用专业无人机侦测设备给出伪造测试结果和侦测的建议。
+
+[![伪造测试演示](imag/侦测1.jpg)](<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=116746656678508&bvid=BV1ctJF6XEzL&cid=39105203321&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>)
+
+> 📌 点击上图跳转 B 站观看完整演示视频。如果链接失效，请将视频上传至 B 站后替换 URL。
 
 ---
 
