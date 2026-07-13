@@ -43,7 +43,7 @@
 
 在此感谢网友 **迷麟** 使用专业无人机侦测设备给出伪造测试结果和侦测的建议。
 
-空
+<video src="videos/伪造测试.mp4" controls width="640" height="360"></video>
 
 ## 🚀 快速开始
 
