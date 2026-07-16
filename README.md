@@ -46,8 +46,8 @@
 <table>
   <tr>
     <td><video src="https://github.com/user-attachments/assets/80d03752-a366-4e3a-85e2-c91f436d4890" controls width="200" height="356"></video></td>
-    <td><video src="https://github.com/user-attachments/assets/0c4bb0f0-7dc1-42ae-a9e6-a68e6854ac67" controls width="200" height="356"></video></td>
-    <td><video src="https://github.com/user-attachments/assets/d0bd6b12-dbcf-4d4f-82b2-a8a8e2989038" controls width="200" height="356"></video></td>
+    <td><video src="videos/wz.mp4" controls width="200" height="356"></video></td>
+    <td><video src="videos/zc.mp4" controls width="200" height="356"></video></td>
   </tr>
 </table>
 
