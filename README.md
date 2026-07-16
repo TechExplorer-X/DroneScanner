@@ -43,9 +43,12 @@
 
 在此感谢网友 **迷麟** 使用专业无人机侦测设备给出伪造测试结果和侦测的建议。
 
-<video src="https://github.com/user-attachments/assets/80d03752-a366-4e3a-85e2-c91f436d4890" controls width="300" height="533"></video>
-
-<video src="https://github.com/user-attachments/assets/209a9638-8cb0-4ffd-832a-5b8775204111" controls width="200" height="356" controls width="300" height="533"></video>
+<table>
+  <tr>
+    <td><video src="https://github.com/user-attachments/assets/80d03752-a366-4e3a-85e2-c91f436d4890" controls style="width:100%"></video></td>
+    <td><video src="https://github.com/user-attachments/assets/209a9638-8cb0-4ffd-832a-5b8775204111" controls style="width:100%"></video></td>
+  </tr>
+</table>
 
 ## 🚀 快速开始
 
