@@ -46,8 +46,7 @@
 <table>
   <tr>
     <td><video src="https://github.com/user-attachments/assets/80d03752-a366-4e3a-85e2-c91f436d4890" controls width="200" height="356"></video></td>
-    <td><video src="videos/wz.mp4" controls width="200" height="356"></video></td>
-    <td><video src="videos/zc.mp4" controls width="200" height="356"></video></td>
+    <td><video src="https://github.com/user-attachments/assets/209a9638-8cb0-4ffd-832a-5b8775204111" controls width="200" height="356"></video></td>
   </tr>
 </table>
 
