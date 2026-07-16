@@ -43,8 +43,6 @@
 
 在此感谢网友 **迷麟** 使用专业无人机侦测设备给出伪造测试结果和侦测的建议。
 
-<video src="https://github.com/user-attachments/assets/80d03752-a366-4e3a-85e2-c91f436d4890" controls width="300" height="533"></video>
-
 <table>
   <tr>
     <td><video src="https://github.com/user-attachments/assets/80d03752-a366-4e3a-85e2-c91f436d4890" controls width="200" height="356"></video></td>
