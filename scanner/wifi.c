@@ -5,6 +5,7 @@
 
 #if defined(ARDUINO_ARCH_ESP32)
 #include <Arduino.h>
+#include <time.h>
 int clock_gettime(clockid_t, struct timespec *);
 #else
 #include <string.h>
@@ -13,7 +14,6 @@ int clock_gettime(clockid_t, struct timespec *);
 #endif
 
 #include <errno.h>
-#include <time.h>
 
 #include "opendroneid.h"
 #include "odid_wifi.h"
