@@ -44,7 +44,7 @@ const int AP_CHANNEL = 6;
 
 WebServer server(80);
 
-#define DJI_MODEL_COUNT 23
+#define DJI_MODEL_COUNT 26
 typedef struct {
   const char* prefix;
   const char* name;
@@ -69,7 +69,6 @@ const DJI_Model djiModels[DJI_MODEL_COUNT] PROGMEM = {
   {"1581FA8J", "Avata 360", "消费级"},
   {"1581FBV5", "Lito 1", "消费级"},
   {"1581FB34", "Lito X1", "消费级"},
-  {"1581F6CD", "Mini 2 SE", "消费级"},
   /* FPV */
   {"1581F6W8", "Avata 2", "穿越机"},
   {"1581F4CQ", "Avata", "穿越机"},
