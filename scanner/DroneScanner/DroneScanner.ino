@@ -35,8 +35,16 @@
 #include <WebServer.h>
 
 // Config
-const int SERIAL1_RX_PIN = 7;
-const int SERIAL1_TX_PIN = 6;
+const int SERIAL1_RX_PIN = 16;
+const int SERIAL1_TX_PIN = 17;
+
+// NTP 时间同步配置（开机时临时连一次，之后切回纯 AP）
+const char* NTP_WIFI_SSID = "your_wifi_ssid";       // ← 改成你自己的 WiFi
+const char* NTP_WIFI_PASSWORD = "your_wifi_password";   // ← 改成你自己的密码
+const unsigned long NTP_TIMEOUT_MS = 15000;           // 联网+同步最长等待 15 秒
+const char* NTP_SERVER1 = "time.cloudflare.com";           // 国内 NTP，速度快
+const char* NTP_SERVER2 = "pool.ntp.org";             // 备用
+bool timeIsSynced = false;                            // 全局标记，同步成功与否
 
 const char* AP_SSID = "DroneScanner";
 const char* AP_PASSWORD = "12345678";
@@ -294,6 +302,72 @@ window.onload=load;
 </html>
 )rawliteral";
 
+// 开机时短暂联网同步 UTC 时间，之后可以断开 STA
+void syncTimeViaNTP() {
+  Serial.println("正在连接 WiFi 同步 UTC 时间...");
+  WiFi.mode(WIFI_AP_STA);   // AP+STA 共存模式
+  WiFi.begin(NTP_WIFI_SSID, NTP_WIFI_PASSWORD);
+
+  unsigned long startAttempt = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - startAttempt < NTP_TIMEOUT_MS) {
+    delay(300);
+    Serial.print(".");
+  }
+  Serial.println();
+
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("[NTP] WiFi 连接超时，跳过时间同步，使用相对时间戳");
+    WiFi.disconnect(true);
+    return;
+  }
+
+  Serial.println("[NTP] WiFi 已连接，请求 NTP 时间...");
+  configTime(0, 0, NTP_SERVER1, NTP_SERVER2);  // 第一个 0,0 表示 UTC（不用时区偏移）
+
+  struct tm timeinfo;
+  unsigned long ntpStart = millis();
+  bool got = false;
+  while (millis() - ntpStart < NTP_TIMEOUT_MS) {
+    if (getLocalTime(&timeinfo, 1000)) {
+      got = true;
+      break;
+    }
+  }
+
+  if (got) {
+    timeIsSynced = true;
+    char buf[32];
+    strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &timeinfo);
+    Serial.printf("[NTP] 同步成功，当前 UTC 时间: %s\n", buf);
+  } else {
+    Serial.println("[NTP] 时间同步失败，使用相对时间戳");
+  }
+
+  // 断开 STA 连接，只保留 AP（避免和 DroneScanner AP 共存干扰嗅探效果）
+  WiFi.disconnect(true);
+  delay(100);
+  WiFi.mode(WIFI_AP);
+}
+
+// 打印时间戳：已同步则显示真实 UTC，否则显示开机相对时间
+void printTimestamp() {
+  if (timeIsSynced) {
+    struct tm timeinfo;
+    if (getLocalTime(&timeinfo, 0)) {
+      char buf[32];
+      strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &timeinfo);
+      Serial.printf("[%s UTC] ", buf);
+      return;
+    }
+  }
+  // 回退：相对时间戳
+  unsigned long ms = millis();
+  unsigned int h = (ms / 3600000) % 24;
+  unsigned int m = (ms / 60000) % 60;
+  unsigned int s = (ms / 1000) % 60;
+  Serial.printf("[+%02u:%02u:%02u] ", h, m, s);
+}
+
 // Setup
 void setup() {
   setCpuFrequencyMhz(160);
@@ -302,10 +376,12 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println("\n========================================");
-  Serial.println("=== 无人机探测 v2.0 ===");
+  Serial.println("=== 无人机探测 v2.1a ===");
   Serial.println("========================================");
 
   nvs_flash_init();
+
+  syncTimeViaNTP();   // ← 新增：开机先同步 UTC 时间
 
   Serial.println("Starting AP...");
   WiFi.mode(WIFI_AP);
@@ -338,6 +414,7 @@ void loop() {
     lastHousekeeping = now;
     for (int i = 0; i < MAX_DRONES; i++) {
       if (droneCache[i].mac[0] != 0 && (now - droneCache[i].last_seen > 120000)) {
+        printTimestamp();
         Serial.printf("[exp] stale: %02X:%02X:%02X:%02X:%02X:%02X\n",
                       droneCache[i].mac[0], droneCache[i].mac[1], droneCache[i].mac[2],
                       droneCache[i].mac[3], droneCache[i].mac[4], droneCache[i].mac[5]);
@@ -349,6 +426,7 @@ void loop() {
   }
 
   if (now - last_status > 60000UL) {
+    printTimestamp();
     Serial.printf("[state] %d targets | %d packets\n", droneCount, packetCount);
     last_status = now;
   }
@@ -411,6 +489,7 @@ void handleApiDrones() {
         strncpy(modelCache[i].name, modelName, sizeof(modelCache[i].name) - 1);
         if (modelCat) strncpy(modelCache[i].category, modelCat, sizeof(modelCache[i].category) - 1);
         modelCache[i].found = true;
+        printTimestamp();
         Serial.printf("[match] %s -> %s (%s)\n", droneCache[i].uav_id, modelName, modelCat ? modelCat : "?");
       }
     }
@@ -448,6 +527,7 @@ void handleClear() {
   memset(modelCache, 0, sizeof(modelCache));
   droneCount = 0;
   server.send(200, "application/json", "{\"status\":\"ok\"}");
+  printTimestamp();
   Serial.println("[clear] list cleared");
 }
 
@@ -535,6 +615,7 @@ void printDroneInfo(int idx) {
            droneCache[idx].mac[0], droneCache[idx].mac[1], droneCache[idx].mac[2],
            droneCache[idx].mac[3], droneCache[idx].mac[4], droneCache[idx].mac[5]);
 
+  printTimestamp();
   Serial.printf("[%d] %s RSSI:%d", packetCount, macStr, droneCache[idx].rssi);
 
   if (droneCache[idx].uav_id[0] != 0) {
