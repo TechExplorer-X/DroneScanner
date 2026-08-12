@@ -44,7 +44,7 @@ const int AP_CHANNEL = 6;
 
 WebServer server(80);
 
-#define DJI_MODEL_COUNT 23
+#define DJI_MODEL_COUNT 46
 typedef struct {
   const char* prefix;
   const char* name;
@@ -69,19 +69,39 @@ const DJI_Model djiModels[DJI_MODEL_COUNT] PROGMEM = {
   {"1581FA8J", "Avata 360", "消费级"},
   {"1581FBV5", "Lito 1", "消费级"},
   {"1581FB34", "Lito X1", "消费级"},
-  {"1581F6CD", "Mini 2 SE", "消费级"},
+  {"1581F5YH", "Mini 3", "消费级"},
+  {"1581F6Z9", "Mini 4 Pro", "消费级"},
+  {"1581F45T", "Mavic 3", "消费级"},
   /* FPV */
   {"1581F6W8", "Avata 2", "穿越机"},
   {"1581F4CQ", "Avata", "穿越机"},
+  {"1581F4QW", "Avata", "穿越机"},
   {"1581FA6Q", "Neo 2", "穿越机"},
   {"1581F8A1", "Neo", "穿越机"},
+  {"1581F87L", "Neo", "穿越机"},
   {"1581F3CQ", "DJI FPV", "穿越机"},
   {"1581F7V2", "DJI Flip", "穿越机"},
   /* enterprise */
   {"1581F6H8", "Matrice 350 RTK", "行业级"},
   {"1581F5BK", "Matrice 30", "行业级"},
+  {"1581F5BM", "Matrice 30T", "行业级"},
   {"1581F52Q", "Mavic 3E/3T", "行业级"},
+  {"1581F5FH", "Mavic 3E/3T", "行业级"},
+  {"1581F5FJ", "Mavic 3M", "行业级"},
   {"1581F578", "Inspire 3", "行业级"},
+  {"1581F4Z4", "Inspire 3", "行业级"},
+  {"1581F6GK", "Matrice 300 Series", "行业级"},
+  {"1581F6Q8", "Matrice 3D", "行业级"},
+  {"1581F6QA", "Matrice 3TD", "行业级"},
+  {"1581F9HE", "Matrice 4T/4E", "行业级"},
+  {"1581F7K3", "Matrice 4T/4E", "行业级"},
+  {"1581F8HH", "Matrice 4D/TD", "行业级"},
+  {"1581F8HG", "Matrice 4D/TD", "行业级"},
+  {"1581F8DB", "Matrice 400", "行业级"},
+  {"1581F986", "Mavic 4 Series", "行业级"},
+  {"1581FAN4", "FlyCart 100", "行业级"},
+  /* general */
+  {"1748FEV3", "EVO MAX", "通用"},
 };
 
 // 机型 lookup cache
