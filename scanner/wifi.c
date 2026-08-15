@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <errno.h>
+
 #if defined(ARDUINO_ARCH_ESP32)
 #include <Arduino.h>
+#include <time.h>
 int clock_gettime(clockid_t, struct timespec *);
 #else
 #include <string.h>
 #include <stddef.h>
 #include <stdio.h>
-#endif
-
-#include <errno.h>
 #include <time.h>
+#endif
 
 #include "opendroneid.h"
 #include "odid_wifi.h"
