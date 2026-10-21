@@ -8,9 +8,6 @@
 
 > An ESP32-based drone detection and identification system that listens to Remote ID broadcasts from drones using WiFi promiscuous mode and displays the detection results in real time through a web control panel.
 
-> 🚀 **DroneScanner is returning to active open-source development!**
-> We are committed to expanding Remote ID protocol compatibility and decoding reliability, improving documentation, tests, and build processes, and welcoming community contributions. Issues and pull requests are welcome!
-
 ---
 
 ## 📸 Preview
@@ -25,12 +22,32 @@
 
 - **📡 Real-time drone detection** — Captures drone broadcast packets in WiFi promiscuous mode
 - **🔍 Open Drone ID decoding** — Full ASTM F3411-22a Remote ID protocol parsing
-- **🏷️ DJI model identification** — Built-in database of 23 DJI drone models with automatic model & category matching
+- **🏷️ Multi-brand model identification** — Built-in database of 100 SN-prefix mappings covering 12 brands (DJI, Autel, Parrot, Skydio, Yuneec, etc.) with automatic brand, model & category matching
 - **🖥️ Web control panel** — ESP32 acts as an AP; view results directly from any phone/PC browser
   - Real-time list: MAC, RSSI, model, serial number, GPS coordinates
   - Real-time statistics: detection count, total packets, uptime
   - One-click clear
 - **🔌 Dual serial output** — Serial (USB debug) + Serial1 (external display / logging)
+
+---
+
+## 📊 Model Database
+
+Built-in **100** SN-prefix → brand → model → category mappings covering **12 brands**:
+
+| Category | Entries | Examples |
+|:----:|:--------:|------|
+| Consumer (消费级) | 33 | Mavic 4 Pro, Mini 5 Pro, Air 3S, EVO II, Anafi |
+| FPV (穿越机) | 8 | Avata 2, Avata 360, Flip, Neo 2 |
+| Enterprise (行业级) | 35 | Matrice 4 Series, Matrice 350 RTK, Dragonfish, Skydio X2 |
+| Agriculture (植保级) | 11 | Agras T50, Agras T100, XAG P150 Max |
+| Logistics (物流级) | 2 | FlyCart 30, FlyCart 100 |
+| Cinema (影视级) | 3 | Alta X, Alta X Gen2, Alta 8 |
+| Surveying (测绘级) | 8 | eBee X, WingtraOne, md4-1000 |
+
+Brands: DJI (55), Autel (13), Parrot (5), Skydio (4), Yuneec (4), XAG (4), senseFly (4), Freefly (3), Percepto (3), Microdrones (2), Wingtra (2), SwellPro (1).
+
+> Matching is based on the SN prefix (e.g., `1581F8`); extend the `droneModels` array in `scanner/scanner.ino` to add more mappings.
 
 ---
 
@@ -132,8 +149,9 @@ Adjust freely according to your wiring.
       "mac": "AA:BB:CC:DD:EE:FF",
       "rssi": -65,
       "uav_id": "1581F8LQ1234",
-      "model_name": "Mavic 4 Pro",
-      "category": "Consumer",
+      "model_name": "Mavic 4 Pro (64GB)",
+      "model_cat": "消费级",
+      "brand": "DJI",
       "lat": 39.9042,
       "lon": 116.4074,
       "altitude_msl": 120,
@@ -145,7 +163,9 @@ Adjust freely according to your wiring.
     }
   ],
   "count": 1,
-  "packets": 42
+  "packets": 42,
+  "version": "2.1",
+  "uptime": 3600
 }
 ```
 
@@ -198,7 +218,7 @@ Licensed under **GPL-3.0**. See [LICENSE](LICENSE).
 
 ## 🙌 Contributing
 
-Issues and pull requests are welcome! If you add new DJI model mappings or improve ODID decoding, please include the corresponding hardware identifiers and test data.
+Issues and pull requests are welcome! If you add new drone model mappings or improve ODID decoding, please include the corresponding hardware identifiers and test data.
 
 ---
 

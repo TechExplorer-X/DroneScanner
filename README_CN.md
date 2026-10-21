@@ -32,7 +32,7 @@
 
 - **📡 无人机实时探测** — 捕获 WiFi 混杂模式下的无人机广播数据包
 - **🔍 Open Drone ID 解码** — 完整解析 ASTM F3411-22a Remote ID 协议
-- **🏷️ DJI 机型识别** — 内置 23 款 DJI 无人机型号库，自动匹配机型与分类
+- **🏷️ 多品牌机型识别** — 内置 100 条无人机机型映射库（覆盖 12 个品牌），自动匹配品牌、机型与分类
 - **🖥️ Web 控制面板** — ESP32 作为 AP，手机/电脑浏览器直连查看
   - 实时列表：MAC、RSSI、型号、序列号、位置坐标
   - 实时统计：探测数量、数据包总数、运行时长
@@ -161,8 +161,9 @@ const int SERIAL1_TX_PIN = 6;
       "mac": "AA:BB:CC:DD:EE:FF",
       "rssi": -65,
       "uav_id": "1581F8LQ1234",
-      "model_name": "Mavic 4 Pro",
-      "category": "消费级",
+      "model_name": "Mavic 4 Pro (64GB)",
+      "model_cat": "消费级",
+      "brand": "DJI",
       "lat": 39.9042,
       "lon": 116.4074,
       "altitude_msl": 120,
@@ -174,7 +175,9 @@ const int SERIAL1_TX_PIN = 6;
     }
   ],
   "count": 1,
-  "packets": 42
+  "packets": 42,
+  "version": "2.1",
+  "uptime": 3600
 }
 ```
 
@@ -185,14 +188,18 @@ const int SERIAL1_TX_PIN = 6;
 | `mac` | string | 无人机 MAC 地址 |
 | `rssi` | int | 信号强度（dBm） |
 | `uav_id` | string | 无人机序列号 |
-| `model_name` | string | 匹配到的 DJI 机型名称 |
-| `category` | string | 分类：消费级 / 穿越机 / 行业级 |
+| `model_name` | string | 匹配到的机型名称 |
+| `model_cat` | string | 分类：消费级 / 穿越机 / 行业级 / 植保级 / 物流级 / 影视级 / 测绘级 |
+| `brand` | string | 品牌（DJI / Autel / Parrot / Skydio 等） |
 | `lat`, `lon` | float | 无人机经纬度 |
 | `altitude_msl` | float | 海拔高度（m） |
 | `height_agl` | float | 相对地面高度（m） |
 | `speed` | float | 水平速度（m/s） |
 | `heading` | float | 航向角（°） |
 | `op_id` | string | 操作员 ID |
+| `last_seen` | int | 距上次探测的秒数 |
+| `version` | string | 固件版本号（如 2.1） |
+| `uptime` | int | 运行时长（秒） |
 
 ---
 
@@ -211,17 +218,23 @@ DroneScanner\
 
 ---
 
-## 📊 DJI 机型库
+## 📊 机型库（多品牌）
 
-内置 **23 款** DJI 无人机的 prefix → 型号 → 分类映射表：
+内置 **100 条**无人机的 SN 前缀 → 品牌 → 机型 → 分类映射，覆盖 **12 个品牌**：
 
-| 分类 | 机型数量 | 举例 |
+| 分类 | 映射条数 | 举例 |
 |:----:|:--------:|------|
-| **消费级** | 12 | Mavic 4 Pro, Mavic 3 Pro, Air 3S, Air 3, Mini 5 Pro, Mini 4 Pro 等 |
-| **穿越机** | 7 | Avata 3, Avata 2, Neo 2, DJI FPV, Flip 等 |
-| **行业级** | 4 | Matrice 350, Matrice 30, Mavic 3E, Mavic 3T, Inspire 3 等 |
+| **消费级** | 33 | Mavic 4 Pro, Mini 5 Pro, Air 3S, EVO II, Anafi 等 |
+| **穿越机** | 8 | Avata 2, Avata 360, Flip, Neo 2, FPV 等 |
+| **行业级** | 35 | Matrice 4 系列, Matrice 350 RTK, Dragonfish, Skydio X2 等 |
+| **植保级** | 11 | Agras T50, Agras T100, 极目 P150 Max 等 |
+| **物流级** | 2 | FlyCart 30, FlyCart 100 |
+| **影视级** | 3 | Alta X, Alta X Gen2, Alta 8 |
+| **测绘级** | 8 | eBee X, WingtraOne, md4-1000 等 |
 
-> 机型匹配基于前缀（`1581F8` 等硬件标识符），可在 `scanner.ino` 的 `DJI_机型` 数组中扩展。
+品牌分布：DJI 55 / Autel 13 / Parrot 5 / Skydio 4 / Yuneec 4 / 极目 4 / senseFly 4 / Freefly 3 / Percepto 3 / Microdrones 2 / Wingtra 2 / SwellPro 1
+
+> 机型匹配基于 SN 前缀（`1581F8` 等硬件标识符），可在 `scanner.ino` 的 `droneModels` 数组中扩展。
 
 ---
 
@@ -231,7 +244,7 @@ USB 串口（115200 baud）输出实时日志：
 
 ```
 ================================
-=== 无人机探测 v2.0 ===
+=== 无人机探测 v2.1 ===
 ================================
 Starting AP...
 AP: DroneScanner
@@ -241,7 +254,7 @@ Web server ready
 
 正在扫描周围的无人机信号...
 
-[42] AA:BB:CC:DD:EE:FF RSSI:-60 | 机型:Mavic 4 Pro | 39.9042,116.4074 alt:120m
+[42] AA:BB:CC:DD:EE:FF RSSI:-60 | 机型:DJI Mavic 4 Pro(消费级) | 39.9042,116.4074 alt:120m
 [state] 3 targets | 187 packets
 ```
 
@@ -298,4 +311,4 @@ Web server ready
 
 ## 🙌 贡献
 
-欢迎 Issue 和 PR！如果添加了新的 DJI 机型映射或改进了 ODID 解码，请附上对应的硬件标识符和测试数据。
+欢迎 Issue 和 PR！如果添加了新的机型映射或改进了 ODID 解码，请附上对应的硬件标识符和测试数据。
