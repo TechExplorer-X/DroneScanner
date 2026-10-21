@@ -9,6 +9,7 @@
 #endif
 
 #define MAX_DRONES 20
+#define FW_VERSION "2.2"
 
 #include <Arduino.h>
 #include <HardwareSerial.h>
@@ -44,74 +45,126 @@ const int AP_CHANNEL = 6;
 
 WebServer server(80);
 
-#define DJI_MODEL_COUNT 46
+#define DRONE_MODEL_COUNT 100
 typedef struct {
   const char* prefix;
   const char* name;
+  const char* brand;
   const char* category;
-} DJI_Model;
+} DroneModel;
 
-const DJI_Model djiModels[DJI_MODEL_COUNT] PROGMEM = {
-  /* consumer */
-  {"1581F8LQ", "Mavic 4 Pro", "消费级"},
-  {"1581F67Q", "Mavic 3 Pro", "消费级"},
-  {"1581F5Y8", "Mavic 3 Classic", "消费级"},
-  {"1581F45Q", "Mavic 3", "消费级"},
-  {"1581F895", "Air 3S", "消费级"},
-  {"1581F6N8", "Air 3", "消费级"},
-  {"1581F385", "Air 2S", "消费级"},
-  {"1581FANL", "Mini 5 Pro", "消费级"},
-  {"1581F9DE", "Mini 5 Pro", "消费级"},
-  {"1581F5QJ", "Mini 4 Pro", "消费级"},
-  {"1581F8C8", "Mini 4K", "消费级"},
-  {"1581F4XF", "Mini 3 Pro", "消费级"},
-  {"1581F6CD", "Mini 2 SE", "消费级"},
-  {"1581FA8J", "Avata 360", "消费级"},
-  {"1581FBV5", "Lito 1", "消费级"},
-  {"1581FB34", "Lito X1", "消费级"},
-  {"1581F5YH", "Mini 3", "消费级"},
-  {"1581F6Z9", "Mini 4 Pro", "消费级"},
-  {"1581F45T", "Mavic 3", "消费级"},
-  /* FPV */
-  {"1581F6W8", "Avata 2", "穿越机"},
-  {"1581F4CQ", "Avata", "穿越机"},
-  {"1581F4QW", "Avata", "穿越机"},
-  {"1581FA6Q", "Neo 2", "穿越机"},
-  {"1581F8A1", "Neo", "穿越机"},
-  {"1581F87L", "Neo", "穿越机"},
-  {"1581F3CQ", "DJI FPV", "穿越机"},
-  {"1581F7V2", "DJI Flip", "穿越机"},
-  /* enterprise */
-  {"1581F6H8", "Matrice 350 RTK", "行业级"},
-  {"1581F5BK", "Matrice 30", "行业级"},
-  {"1581F5BM", "Matrice 30T", "行业级"},
-  {"1581F52Q", "Mavic 3E/3T", "行业级"},
-  {"1581F5FH", "Mavic 3E/3T", "行业级"},
-  {"1581F5FJ", "Mavic 3M", "行业级"},
-  {"1581F578", "Inspire 3", "行业级"},
-  {"1581F4Z4", "Inspire 3", "行业级"},
-  {"1581F6GK", "Matrice 300 Series", "行业级"},
-  {"1581F6Q8", "Matrice 3D", "行业级"},
-  {"1581F6QA", "Matrice 3TD", "行业级"},
-  {"1581F9HE", "Matrice 4T/4E", "行业级"},
-  {"1581F7K3", "Matrice 4T/4E", "行业级"},
-  {"1581F8HH", "Matrice 4D/TD", "行业级"},
-  {"1581F8HG", "Matrice 4D/TD", "行业级"},
-  {"1581F8DB", "Matrice 400", "行业级"},
-  {"1581F986", "Mavic 4 Series", "行业级"},
-  {"1581FAN4", "FlyCart 100", "行业级"},
-  /* general */
-  {"1748FEV3", "EVO MAX", "通用"},
+const DroneModel droneModels[DRONE_MODEL_COUNT] PROGMEM = {
+  {"1581F45T", "Mavic 3", "DJI", "消费级"},
+  {"1581F67P", "Mavic 3 Classic", "DJI", "消费级"},
+  {"1581F67Q", "Mavic 3 Pro", "DJI", "消费级"},
+  {"1581F6MK", "Mavic 3 Pro Cine", "DJI", "消费级"},
+  {"1581F5YH", "Mini 3", "DJI", "消费级"},
+  {"1581F4XF", "Mini 3 Pro", "DJI", "消费级"},
+  {"1581F6Z9", "Mini 4 Pro", "DJI", "消费级"},
+  {"1581F6CD", "Mini 2 SE", "DJI", "消费级"},
+  {"1581F8PJ", "Mini 4K", "DJI", "消费级"},
+  {"1581F9DE", "Mini 5 Pro", "DJI", "消费级"},
+  {"1581FANL", "Mini 5 Pro (4G)", "DJI", "消费级"},
+  {"1581F8LQ", "Mavic 4 Pro (64GB)", "DJI", "消费级"},
+  {"1581F986", "Mavic 4 Pro (512GB)", "DJI", "消费级"},
+  {"1581F6N8", "Air 3", "DJI", "消费级"},
+  {"1581F895", "Air 3S", "DJI", "消费级"},
+  {"1581F11V", "Phantom 4 Pro V2.0", "DJI", "消费级"},
+  {"1581FB34", "Lito X1", "DJI", "消费级"},
+  {"1581FBV5", "Lito 1", "DJI", "消费级"},
+  {"1581F7V2", "Flip", "DJI", "穿越机"},
+  {"1581F4QW", "Avata", "DJI", "穿越机"},
+  {"1581F6W8", "Avata 2", "DJI", "穿越机"},
+  {"1581FA8J", "Avata 360 (DVN3XT)", "DJI", "穿越机"},
+  {"1581FBLK", "Avata 360 (DVN3NT)", "DJI", "穿越机"},
+  {"1581F37Q", "FPV", "DJI", "穿越机"},
+  {"1581F87L", "Neo", "DJI", "穿越机"},
+  {"1581FA6Q", "Neo 2", "DJI", "穿越机"},
+  {"1581F5FH", "Mavic 3E", "DJI", "行业级"},
+  {"1581F5FJ", "Mavic 3T", "DJI", "行业级"},
+  {"1581F5FK", "Mavic 3M", "DJI", "行业级"},
+  {"1581F6QA", "Matrice 3D", "DJI", "行业级"},
+  {"1581F6Q8", "Matrice 3TD", "DJI", "行业级"},
+  {"1581FBEX", "Matrice 3TA", "DJI", "行业级"},
+  {"1581F4BN", "经纬M30", "DJI", "行业级"},
+  {"1581F5BK", "Matrice 30T", "DJI", "行业级"},
+  {"1581F62H", "Matrice 30T", "DJI", "行业级"},
+  {"1581F5BL", "Matrice 30（机场版）", "DJI", "行业级"},
+  {"1581F5BM", "Matrice 30T（机场版）", "DJI", "行业级"},
+  {"1581F6GK", "Matrice 350 RTK", "DJI", "行业级"},
+  {"1581F8DB", "Matrice 400", "DJI", "行业级"},
+  {"1581F7FV", "Matrice 4E", "DJI", "行业级"},
+  {"1581F7K3", "Matrice 4T", "DJI", "行业级"},
+  {"1581F8HH", "Matrice 4D", "DJI", "行业级"},
+  {"1581F8HG", "Matrice 4TD", "DJI", "行业级"},
+  {"1581F4GC", "Mavic 2 Enterprise Advanced", "DJI", "行业级"},
+  {"1581F0UY", "Phantom 4 RTK", "DJI", "行业级"},
+  {"1581F4Z4", "Inspire 3", "DJI", "行业级"},
+  {"1581F446", "Agras T10 / T30", "DJI", "植保级"},
+  {"1581F574", "Agras T20P / T40", "DJI", "植保级"},
+  {"1581F6BU", "Agras T50", "DJI", "植保级"},
+  {"1581F836", "Agras T25P", "DJI", "植保级"},
+  {"1581F8ZL", "Agras T100", "DJI", "植保级"},
+  {"1581F8ZX", "Agras T70P", "DJI", "植保级"},
+  {"1581FAE3", "Agras T70S", "DJI", "植保级"},
+  {"1581F7C6", "FlyCart 30", "DJI", "物流级"},
+  {"1581FAN4", "FlyCart 100", "DJI", "物流级"},
+  {"1748FEV3", "EVO Max / MDX-1", "Autel", "行业级"},
+  {"1748FEV4", "Autel Alpha", "Autel", "行业级"},
+  {"1748CHL2", "EVO II", "Autel", "消费级"},
+  {"1748CHL7", "EVO II", "Autel", "消费级"},
+  {"1748CLT0", "EVO Lite", "Autel", "消费级"},
+  {"1748CLTG", "EVO Lite", "Autel", "消费级"},
+  {"1748CLTC", "EVO Lite+", "Autel", "消费级"},
+  {"1748CNA0", "EVO Nano", "Autel", "消费级"},
+  {"1748CNAG", "EVO Nano", "Autel", "消费级"},
+  {"1748FEV2", "EVO II V3", "Autel", "消费级"},
+  {"1748CJD1", "Dragonfish Standard", "Autel", "行业级"},
+  {"1748CJD2", "Dragonfish Lite", "Autel", "行业级"},
+  {"1748CJD3", "Dragonfish Pro", "Autel", "行业级"},
+  {"11223344", "Anafi", "Parrot", "消费级"},
+  {"1588E040", "Anafi AI", "Parrot", "行业级"},
+  {"44332211", "Anafi USA", "Parrot", "消费级"},
+  {"PF723000", "Rolling Spider", "Parrot", "消费级"},
+  {"PF727078", "Mambo FLY", "Parrot", "消费级"},
+  {"P208904", "Skydio 2 / 2+", "Skydio", "消费级"},
+  {"SDR21V1", "Skydio X2E", "Skydio", "行业级"},
+  {"SDR35V1", "Skydio X2", "Skydio", "行业级"},
+  {"SR47PCV", "Skydio X10", "Skydio", "行业级"},
+  {"YUNH5ETWET", "H520 Hexacopter", "Yuneec", "行业级"},
+  {"YUNH920202EU", "Tornado H920", "Yuneec", "行业级"},
+  {"YUNQ4KPUS", "Q500 4K Typhoon", "Yuneec", "消费级"},
+  {"YUNTYH3EU", "Typhoon H3", "Yuneec", "行业级"},
+  {"1758X000", "P150 Max", "极目", "植保级"},
+  {"1758X001", "P100 Pro", "极目", "植保级"},
+  {"1758X002", "P100", "极目", "植保级"},
+  {"1758X003", "V40", "极目", "植保级"},
+  {"18179000", "Alta X", "Freefly", "影视级"},
+  {"18179001", "Alta X Gen2", "Freefly", "影视级"},
+  {"18179002", "Alta 8", "Freefly", "影视级"},
+  {"1587A000", "eBee X", "senseFly", "测绘级"},
+  {"1587A001", "eBee TAC", "senseFly", "测绘级"},
+  {"1587A002", "eBee Geo", "senseFly", "测绘级"},
+  {"1587A003", "eBee RTK", "senseFly", "测绘级"},
+  {"1567A000", "md4-1000", "Microdrones", "测绘级"},
+  {"1567A001", "md4-3000", "Microdrones", "测绘级"},
+  {"1688W000", "WingtraOne Gen II", "Wingtra", "测绘级"},
+  {"1688W001", "WingtraOne GEN I", "Wingtra", "测绘级"},
+  {"1701A000", "Percepto Max", "Percepto", "行业级"},
+  {"1701A001", "Percepto Sparrow", "Percepto", "行业级"},
+  {"1701A002", "Percepto Air", "Percepto", "行业级"},
+  {"1778S000", "SplashDrone 4", "SwellPro", "消费级"}
 };
 
 // 机型 lookup cache
-struct drone_model {
-  char name[24];
+struct model_cache {
+  char name[32];
+  char brand[16];
   char category[12];
   bool found;
 };
 
-drone_model modelCache[MAX_DRONES];
+model_cache modelCache[MAX_DRONES];
 
 // Cache
 
@@ -151,7 +204,7 @@ struct uav_data {
 uav_data droneCache[MAX_DRONES];
 int droneCount = 0;
 unsigned long lastHousekeeping = 0;
-static int packetCount = 0;
+static unsigned long packetCount = 0;
 unsigned long last_status = 0;
 
 ODID_UAS_Data uas;
@@ -162,7 +215,8 @@ void parse_odid(struct uav_data *, ODID_UAS_Data *);
 void store_mac(struct uav_data *uav, uint8_t *payload);
 void printDroneInfo(int idx);
 int findOrAddDrone(uint8_t *mac);
-const char* lookup_dji_model(const char* uav_id);
+const DroneModel* lookup_drone_model(const char* uav_id);
+String jsonEscape(const char* s);
 void handleRoot();
 void handleApiDrones();
 void handleClear();
@@ -213,6 +267,10 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
     .cat-tag.c1{background:rgba(33,150,243,.15);color:#42a5f5}
     .cat-tag.c2{background:rgba(156,39,176,.15);color:#ab47bc}
     .cat-tag.c3{background:rgba(255,152,0,.15);color:#ff9800}
+    .cat-tag.c4{background:rgba(233,69,96,.15);color:#e94560}
+    .cat-tag.c5{background:rgba(38,198,218,.15);color:#26c6da}
+    .cat-tag.c6{background:rgba(255,213,79,.15);color:#ffd54f}
+    .cat-tag.c7{background:rgba(179,157,219,.15);color:#b39ddb}
     .arrow{color:#555;font-size:12px;transition:transform .3s;flex-shrink:0}
     .item.exp .arrow{transform:rotate(90deg)}
     .detail{display:none;border-top:1px solid rgba(255,255,255,.06);padding:12px 14px;background:rgba(0,0,0,.15)}
@@ -250,7 +308,7 @@ var st=Date.now();
 function ft(s){var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=Math.floor(s%60);return(h>0?h+'h ':'')+(m>0?m+'m ':'')+sc+'s'}
 function rp(r){return Math.max(0,Math.min(100,((r+100)/70)*100))}
 function rc(r){if(r>70)return'#4caf50';if(r>50)return'#8bc34a';if(r>30)return'#ff9800';return'#e94560'}
-    function cc(c){if(!c)return'c3';if(c.indexOf('consumer')>=0)return'c0';if(c.indexOf('fpv')>=0)return'c1';if(c.indexOf('enterprise')>=0)return'c2';return'c3'}
+    function cc(c){if(!c)return'c3';if(c.indexOf('消费级')>=0)return'c0';if(c.indexOf('穿越机')>=0)return'c1';if(c.indexOf('行业级')>=0)return'c2';if(c.indexOf('植保级')>=0)return'c4';if(c.indexOf('物流级')>=0)return'c5';if(c.indexOf('影视级')>=0)return'c6';if(c.indexOf('测绘级')>=0)return'c7';return'c3'}
 function tog(id){var e=document.getElementById(id);if(e)e.classList.toggle('exp')}
 function load(){
   var expanded={};
@@ -279,7 +337,7 @@ function load(){
         h+='<div class="item-icon">'+icon+'</div>';
         h+='<div class="item-info">';
         h+='<div class="item-name'+(uk?' unknown':'')+'">'+mn+'</div>';
-        h+='<div class="item-sub">'+d.mac+(d.alt?' · '+d.alt+'m':'')+(d.speed?' · '+d.speed+'m/s':'')+'</div>';
+        h+='<div class="item-sub">'+(d.brand?d.brand+' · ':'')+d.mac+(d.alt?' · '+d.alt+'m':'')+(d.speed?' · '+d.speed+'m/s':'')+'</div>';
         h+='</div>';
         h+='<div class="item-right">';
         if(mc)h+='<span class="cat-tag '+cc(mc)+'">'+mc+'</span>';
@@ -303,7 +361,7 @@ function load(){
       }
     }
     document.getElementById('dl').innerHTML=h;
-    document.getElementById('lu').textContent='更新: '+new Date().toLocaleTimeString('zh-CN');
+    document.getElementById('lu').textContent='更新: '+new Date().toLocaleTimeString('zh-CN')+(data.version?' · v'+data.version:'');
   });
 }
 function clr(){fetch('/api/clear').then(function(){load()})}
@@ -323,7 +381,7 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println("\n========================================");
-  Serial.println("=== 无人机探测 v2.0 ===");
+  Serial.printf("=== 无人机探测 v%s ===\n", FW_VERSION);
   Serial.println("========================================");
 
   nvs_flash_init();
@@ -363,14 +421,14 @@ void loop() {
                       droneCache[i].mac[0], droneCache[i].mac[1], droneCache[i].mac[2],
                       droneCache[i].mac[3], droneCache[i].mac[4], droneCache[i].mac[5]);
         memset(&droneCache[i], 0, sizeof(uav_data));
-        memset(&modelCache[i], 0, sizeof(drone_model));
+        memset(&modelCache[i], 0, sizeof(model_cache));
         droneCount--;
       }
     }
   }
 
   if (now - last_status > 60000UL) {
-    Serial.printf("[state] %d targets | %d packets\n", droneCount, packetCount);
+    Serial.printf("[state] %d targets | %lu packets\n", droneCount, packetCount);
     last_status = now;
   }
 
@@ -378,28 +436,42 @@ void loop() {
 }
 
 // 机型 lookup
-const char* lookup_dji_model(const char* uav_id) {
+const DroneModel* lookup_drone_model(const char* uav_id) {
   if (!uav_id || uav_id[0] == 0) return NULL;
 
-  for (int i = 0; i < DJI_MODEL_COUNT; i++) {
-    int prefixLen = strlen(djiModels[i].prefix);
-    if (strncmp(uav_id, djiModels[i].prefix, prefixLen) == 0) {
-      return djiModels[i].name;
+  for (int i = 0; i < DRONE_MODEL_COUNT; i++) {
+    int prefixLen = strlen(droneModels[i].prefix);
+    if (strncmp(uav_id, droneModels[i].prefix, prefixLen) == 0) {
+      return &droneModels[i];
     }
   }
   return NULL;
 }
 
-const char* lookup_dji_category(const char* uav_id) {
-  if (!uav_id || uav_id[0] == 0) return NULL;
-
-  for (int i = 0; i < DJI_MODEL_COUNT; i++) {
-    int prefixLen = strlen(djiModels[i].prefix);
-    if (strncmp(uav_id, djiModels[i].prefix, prefixLen) == 0) {
-      return djiModels[i].category;
+// Escape untrusted strings before embedding into JSON
+String jsonEscape(const char* s) {
+  if (!s) return "\"\"";
+  String out = "\"";
+  for (const char* p = s; *p; p++) {
+    char c = *p;
+    switch (c) {
+      case '"':  out += "\\\""; break;
+      case '\\': out += "\\\\"; break;
+      case '\n': out += "\\n";  break;
+      case '\r': out += "\\r";  break;
+      case '\t': out += "\\t";  break;
+      default:
+        if ((uint8_t)c < 0x20) {
+          char buf[8];
+          snprintf(buf, sizeof(buf), "\\u%04x", c);
+          out += buf;
+        } else {
+          out += c;
+        }
     }
   }
-  return NULL;
+  out += "\"";
+  return out;
 }
 
 // Web Handlers
@@ -423,16 +495,20 @@ void handleApiDrones() {
     // Lookup model
     const char* modelName = modelCache[i].found ? modelCache[i].name : NULL;
     const char* modelCat = modelCache[i].found ? modelCache[i].category : NULL;
+    const char* modelBrand = modelCache[i].found ? modelCache[i].brand : NULL;
 
     // If not cached, try to lookup
     if (!modelCache[i].found && droneCache[i].uav_id[0] != 0) {
-      modelName = lookup_dji_model(droneCache[i].uav_id);
-      modelCat = lookup_dji_category(droneCache[i].uav_id);
-      if (modelName) {
-        strncpy(modelCache[i].name, modelName, sizeof(modelCache[i].name) - 1);
-        if (modelCat) strncpy(modelCache[i].category, modelCat, sizeof(modelCache[i].category) - 1);
+      const DroneModel* m = lookup_drone_model(droneCache[i].uav_id);
+      if (m) {
+        modelName = m->name;
+        modelCat = m->category;
+        modelBrand = m->brand;
+        strncpy(modelCache[i].name, m->name, sizeof(modelCache[i].name) - 1);
+        strncpy(modelCache[i].category, m->category, sizeof(modelCache[i].category) - 1);
+        strncpy(modelCache[i].brand, m->brand, sizeof(modelCache[i].brand) - 1);
         modelCache[i].found = true;
-        Serial.printf("[match] %s -> %s (%s)\n", droneCache[i].uav_id, modelName, modelCat ? modelCat : "?");
+        Serial.printf("[match] %s -> %s %s (%s)\n", droneCache[i].uav_id, m->brand, m->name, m->category);
       }
     }
 
@@ -450,17 +526,21 @@ void handleApiDrones() {
     json += ",\"speed\":" + String(droneCache[i].speed);
     json += ",\"heading\":" + String(droneCache[i].heading);
     json += ",\"speed_vertical\":" + String(droneCache[i].speed_vertical);
-    json += ",\"uav_id\":\"" + String(droneCache[i].uav_id) + "\"";
-    json += ",\"op_id\":\"" + String(droneCache[i].op_id) + "\"";
-    json += ",\"desc\":\"" + String(droneCache[i].description) + "\"";
-    json += ",\"model_name\":\"" + String(modelName ? modelName : "") + "\"";
-    json += ",\"model_cat\":\"" + String(modelCat ? modelCat : "") + "\"";
+    json += ",\"uav_id\":" + jsonEscape(droneCache[i].uav_id);
+    json += ",\"op_id\":" + jsonEscape(droneCache[i].op_id);
+    json += ",\"desc\":" + jsonEscape(droneCache[i].description);
+    json += ",\"model_name\":" + jsonEscape(modelName ? modelName : "");
+    json += ",\"model_cat\":" + jsonEscape(modelCat ? modelCat : "");
+    json += ",\"brand\":" + jsonEscape(modelBrand ? modelBrand : "");
     json += ",\"last_seen\":" + String(lastSeenSec);
     json += "}";
     count++;
   }
 
-  json += "],\"packets\":" + String(packetCount) + "}";
+  json += "],\"packets\":" + String(packetCount);
+  json += ",\"version\":\"" + String(FW_VERSION) + "\"";
+  json += ",\"uptime\":" + String(millis() / 1000);
+  json += "}";
   server.send(200, "application/json", json);
 }
 
@@ -481,6 +561,7 @@ int findOrAddDrone(uint8_t *mac) {
     if (droneCache[i].mac[0] == 0) {
       memcpy(droneCache[i].mac, mac, 6);
       memset(modelCache[i].name, 0, sizeof(modelCache[i].name));
+      memset(modelCache[i].brand, 0, sizeof(modelCache[i].brand));
       memset(modelCache[i].category, 0, sizeof(modelCache[i].category));
       modelCache[i].found = false;
       droneCount++;
@@ -556,12 +637,12 @@ void printDroneInfo(int idx) {
            droneCache[idx].mac[0], droneCache[idx].mac[1], droneCache[idx].mac[2],
            droneCache[idx].mac[3], droneCache[idx].mac[4], droneCache[idx].mac[5]);
 
-  Serial.printf("[%d] %s RSSI:%d", packetCount, macStr, droneCache[idx].rssi);
+  Serial.printf("[%lu] %s RSSI:%d", packetCount, macStr, droneCache[idx].rssi);
 
   if (droneCache[idx].uav_id[0] != 0) {
-    const char* model = lookup_dji_model(droneCache[idx].uav_id);
-    if (model) {
-      Serial.printf(" | 机型:%s", model);
+    const DroneModel* m = lookup_drone_model(droneCache[idx].uav_id);
+    if (m) {
+      Serial.printf(" | 机型:%s %s(%s)", m->brand, m->name, m->category);
     } else {
       Serial.printf(" | ID:%s", droneCache[idx].uav_id);
     }
