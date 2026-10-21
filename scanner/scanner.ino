@@ -9,7 +9,11 @@
 #endif
 
 #define MAX_DRONES 20
+<<<<<<< HEAD
 #define FW_VERSION "2.2"
+=======
+#define FW_VERSION "2.1"
+>>>>>>> 0b4ba21e60a6add7140f7b6af3cf385c52c61d91
 
 #include <Arduino.h>
 #include <HardwareSerial.h>

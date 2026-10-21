@@ -176,7 +176,11 @@ const int SERIAL1_TX_PIN = 6;
   ],
   "count": 1,
   "packets": 42,
+<<<<<<< HEAD
   "version": "2.2",
+=======
+  "version": "2.1",
+>>>>>>> 0b4ba21e60a6add7140f7b6af3cf385c52c61d91
   "uptime": 3600
 }
 ```
@@ -198,7 +202,11 @@ const int SERIAL1_TX_PIN = 6;
 | `heading` | float | 航向角（°） |
 | `op_id` | string | 操作员 ID |
 | `last_seen` | int | 距上次探测的秒数 |
+<<<<<<< HEAD
 | `version` | string | 固件版本号（如 2.2） |
+=======
+| `version` | string | 固件版本号（如 2.1） |
+>>>>>>> 0b4ba21e60a6add7140f7b6af3cf385c52c61d91
 | `uptime` | int | 运行时长（秒） |
 
 ---
@@ -244,7 +252,11 @@ USB 串口（115200 baud）输出实时日志：
 
 ```
 ================================
+<<<<<<< HEAD
 === 无人机探测 v2.2 ===
+=======
+=== 无人机探测 v2.1 ===
+>>>>>>> 0b4ba21e60a6add7140f7b6af3cf385c52c61d91
 ================================
 Starting AP...
 AP: DroneScanner
