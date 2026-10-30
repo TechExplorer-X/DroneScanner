@@ -1,4 +1,4 @@
-# 🛸 DroneScanner — ESP32 Drone Remote ID Scanner
+# 🛸 DroneScanner - ESP32 Drone Remote ID Scanner
 
 **English** | [**简体中文**](README_CN.md)
 
