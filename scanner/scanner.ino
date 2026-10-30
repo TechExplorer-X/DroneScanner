@@ -95,6 +95,7 @@ const DroneModel droneModels[DRONE_MODEL_COUNT] PROGMEM = {
   {"1581F62H", "Matrice 30T", "DJI", "行业级"},
   {"1581F5BL", "Matrice 30（机场版）", "DJI", "行业级"},
   {"1581F5BM", "Matrice 30T（机场版）", "DJI", "行业级"},
+  {"1748CJD3", "Dragonfish Pro", "Autel", "行业"},
   {"1581F6GK", "Matrice 350 RTK", "DJI", "行业级"},
   {"1581F8DB", "Matrice 400", "DJI", "行业级"},
   {"1581F7FV", "Matrice 4E", "DJI", "行业级"},
